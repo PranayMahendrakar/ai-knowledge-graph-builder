@@ -23,7 +23,7 @@
         <div class="panel-section">
           <h2>Demo Mode</h2>
           <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:10px;">Static demo. Run locally with Neo4j + OpenAI for full functionality.</p>
-          <button class="btn btn-primary" id="btn-load" style="width:100%;margin-bottom:8px">&#x26A1; Load Einstein Graph</button>
+          <button class="btn btn-primary" id="btn-load" onclick="loadDemo()" style="width:100%;margin-bottom:8px;">&#x26A1; Load Einstein Graph</button>
         </div>
         <div class="panel-section">
           <h2>Entities</h2>
@@ -39,8 +39,8 @@
       </aside>
       <main class="graph-container">
         <div class="graph-toolbar">
-          <button class="btn btn-sm" id="btn-zoom-reset">&#x27F3; Reset View</button>
-          <button class="btn btn-sm" id="btn-labels">&#x1F3F7; Labels</button>
+          <button class="btn btn-sm" id="btn-zoom-reset" onclick="resetZoom()">&#x27F3; Reset View</button>
+          <button class="btn btn-sm" id="btn-labels" onclick="toggleLabels()">&#x1F3F7; Labels</button>
           <span id="graph-stats" class="graph-stats"></span>
         </div>
         <div id="graph-canvas">
@@ -49,7 +49,7 @@
             <div class="empty-icon">&#x1F9E0;</div>
             <h3>AI Knowledge Graph Builder</h3>
             <p>Click below to explore the Einstein knowledge graph</p>
-            <button class="btn btn-primary btn-lg" id="btn-load2">&#x26A1; Load Demo Graph</button>
+            <button class="btn btn-primary btn-lg" id="btn-load2" onclick="loadDemo()">&#x26A1; Load Demo Graph</button>
           </div>
         </div>
         <div id="node-tooltip" class="tooltip" style="display:none;"></div>
@@ -64,5 +64,8 @@
   </div>
   <script src="graph.js"></script>
   <script src="demo-data.js"></script>
+  <script>
+    if (typeof initGraph === "function") { initGraph(); }
+  </script>
 </body>
 </html>
