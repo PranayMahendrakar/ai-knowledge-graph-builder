@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Knowledge Graph Builder - Live Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="header-content">
+        <h1>&#x1F9E0; AI Knowledge Graph Builder</h1>
+        <p class="tagline">Upload documents &#x2192; Extract entities &#x2192; Visualize knowledge</p>
+      </div>
+      <div class="header-actions">
+        <a href="https://github.com/PranayMahendrakar/ai-knowledge-graph-builder" class="btn btn-secondary">&#x1F4BB; GitHub</a>
+      </div>
+    </header>
+    <div class="main-layout">
+      <aside class="left-panel">
+        <div class="panel-section">
+          <h2>Demo Mode</h2>
+          <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:10px;">Static demo. Run locally with Neo4j + OpenAI for full functionality.</p>
+          <button class="btn btn-primary" id="btn-load" style="width:100%;margin-bottom:8px">&#x26A1; Load Einstein Graph</button>
+        </div>
+        <div class="panel-section">
+          <h2>Entities</h2>
+          <div id="entities-list" class="entities-list"></div>
+        </div>
+        <div class="panel-section">
+          <h2>About</h2>
+          <div style="font-size:0.78rem;color:var(--text-secondary);">
+            <p style="margin-bottom:6px;"><strong>Tech Stack:</strong></p>
+            <p>FastAPI + Neo4j + OpenAI LLM + spaCy NLP + D3.js</p>
+          </div>
+        </div>
+      </aside>
+      <main class="graph-container">
+        <div class="graph-toolbar">
+          <button class="btn btn-sm" id="btn-zoom-reset">&#x27F3; Reset View</button>
+          <button class="btn btn-sm" id="btn-labels">&#x1F3F7; Labels</button>
+          <span id="graph-stats" class="graph-stats"></span>
+        </div>
+        <div id="graph-canvas">
+          <svg id="main-graph"></svg>
+          <div id="empty-state" class="empty-state">
+            <div class="empty-icon">&#x1F9E0;</div>
+            <h3>AI Knowledge Graph Builder</h3>
+            <p>Click below to explore the Einstein knowledge graph</p>
+            <button class="btn btn-primary btn-lg" id="btn-load2">&#x26A1; Load Demo Graph</button>
+          </div>
+        </div>
+        <div id="node-tooltip" class="tooltip" style="display:none;"></div>
+      </main>
+      <aside class="right-panel">
+        <div class="panel-section">
+          <h2>Entity Details</h2>
+          <div id="entity-details"><p class="placeholder-text">Click a node to see details</p></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <script src="graph.js"></script>
+  <script src="demo-data.js"></script>
+</body>
+</html>
