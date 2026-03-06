@@ -25,6 +25,172 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Build demo site
+        run: |
+          mkdir -p _site
+          cp static/graph.js _site/graph.js
+          cp static/style.css _site/style.css
+          cp static/app.js _site/app.js || true
+          # Create the demo index.html
+          python3 - <<'PYEOF'
+html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Knowledge Graph Builder - Live Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="header-content">
+        <h1>AI Knowledge Graph Builder</h1>
+        <p class="tagline">Interactive Demo</p>
+      </div>
+      <div class="header-actions">
+        <a href="https://github.com/PranayMahendrakar/ai-knowledge-graph-builder" class="btn btn-secondary">View on GitHub</a>
+      </div>
+    </header>
+    <div class="main-layout">
+      <aside class="left-panel">
+        <div class="panel-section">
+          <h2>Demo Mode</h2>
+          <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:10px;">Static demo. Run locally with Neo4j for full functionality.</p>
+          <button class="btn btn-primary" id="btn-load-demo" style="width:100%">Load Einstein Knowledge Graph</button>
+        </div>
+        <div class="panel-section">
+          <h2>Entities</h2>
+          <div id="entities-list"></div>
+        </div>
+      </aside>
+      <main class="graph-container">
+        <div class="graph-toolbar">
+          <button class="btn btn-sm" onclick="resetZoom()">Reset View</button>
+          <button class="btn btn-sm" onclick="toggleLabels()">Labels</button>
+          <span id="graph-stats" class="graph-stats"></span>
+        </div>
+        <div id="graph-canvas">
+          <svg id="main-graph"></svg>
+          <div id="empty-state" class="empty-state">
+            <div class="empty-icon">&#129504;</div>
+            <h3>AI Knowledge Graph Demo</h3>
+            <p>Click the button to load the Einstein knowledge graph</p>
+            <button class="btn btn-primary btn-lg" id="btn-load-demo2">Load Demo Graph</button>
+          </div>
+        </div>
+        <div id="node-tooltip" class="tooltip" style="display:none;"></div>
+      </main>
+      <aside class="right-panel">
+        <div class="panel-section">
+          <h2>Entity Details</h2>
+          <div id="entity-details"><p class="placeholder-text">Click a node to see details</p></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <script src="graph.js"></script>
+  <script>
+    function loadDemo() {
+      var demoData = {
+        nodes: [
+          { id: "n1", name: "Albert Einstein", type: "PERSON", description: "German-born theoretical physicist" },
+          { id: "n2", name: "Theory of Relativity", type: "CONCEPT", description: "Framework for physics at high speeds" },
+          { id: "n3", name: "Physics", type: "CONCEPT", description: "Natural science of matter and energy" },
+          { id: "n4", name: "Nobel Prize in Physics", type: "AWARD", description: "Prestigious scientific award" },
+          { id: "n5", name: "Niels Bohr", type: "PERSON", description: "Danish physicist, quantum pioneer" },
+          { id: "n6", name: "Quantum Mechanics", type: "CONCEPT", description: "Physics of subatomic particles" },
+          { id: "n7", name: "Princeton University", type: "ORG", description: "Ivy League research university" },
+          { id: "n8", name: "Max Planck", type: "PERSON", description: "German physicist, quantum originator" },
+          { id: "n9", name: "Photoelectric Effect", type: "CONCEPT", description: "Emission of electrons by light" },
+          { id: "n10", name: "Special Relativity", type: "WORK", description: "1905 paper: relativity of space-time" },
+          { id: "n11", name: "E=mc2", type: "CONCEPT", description: "Mass-energy equivalence formula" },
+          { id: "n12", name: "Switzerland", type: "GPE", description: "Country where Einstein worked" }
+        ],
+        edges: [
+          { source: "n1", target: "n2", relationship: "DEVELOPED" },
+          { source: "n2", target: "n3", relationship: "BELONGS_TO" },
+          { source: "n1", target: "n4", relationship: "WON" },
+          { source: "n1", target: "n5", relationship: "DEBATED_WITH" },
+          { source: "n5", target: "n6", relationship: "PIONEERED" },
+          { source: "n6", target: "n3", relationship: "BRANCH_OF" },
+          { source: "n1", target: "n7", relationship: "WORKED_AT" },
+          { source: "n8", target: "n4", relationship: "WON" },
+          { source: "n1", target: "n9", relationship: "EXPLAINED" },
+          { source: "n1", target: "n10", relationship: "AUTHORED" },
+          { source: "n10", target: "n11", relationship: "CONTAINS" },
+          { source: "n1", target: "n12", relationship: "LIVED_IN" }
+        ],
+        stats: { node_count: 12, edge_count: 12 }
+      };
+      renderGraph(demoData);
+      var el = document.getElementById("entities-list");
+      el.innerHTML = demoData.nodes.map(function(e) {
+        return "<div class='entity-item' style='border-left:3px solid " + (ENTITY_COLORS[e.type]||"#888") + ";cursor:pointer;padding:4px 8px;display:flex;gap:8px;align-items:center'>" +
+          "<div class='entity-item-info'><span class='entity-name'>" + e.name + "</span><br/><span class='entity-type-sm'>" + e.type + "</span></div>" +
+          "</div>";
+      }).join("");
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      initGraph();
+      document.getElementById("btn-load-demo").onclick = loadDemo;
+      document.getElementById("btn-load-demo2").onclick = loadDemo;
+    });
+  </script>
+</body>
+</html>
+"""
+with open("_site/index.html", "w") as f:
+    f.write(html)
+print("Demo site built successfully")
+PYEOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
+
+  deploy:
+    name: Deploy to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build-demo
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4name: Deploy Demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "static/**"
+      - ".github/workflows/deploy-demo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-demo:
+    name: Build Demo Site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Prepare demo site
         run: |
           mkdir -p _site
