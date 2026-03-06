@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠 AI Knowledge Graph Builder</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <h1>🧠 AI Knowledge Graph Builder</h1>
+        <p class="tagline">Upload documents → Extract entities → Visualize knowledge</p>
+      </div>
+      <div class="header-actions">
+        <button id="btn-clear" class="btn btn-danger" onclick="clearGraph()">🗑 Clear Graph</button>
+        <button id="btn-export" class="btn btn-secondary" onclick="exportGraph()">📥 Export JSON</button>
+        <button id="btn-analytics" class="btn btn-info" onclick="loadAnalytics()">📊 Analytics</button>
+      </div>
+    </header>
+
+    <!-- Main layout -->
+    <div class="main-layout">
+      <!-- Left Panel -->
+      <aside class="left-panel">
+        <!-- Upload Section -->
+        <div class="panel-section">
+          <h2>📄 Upload Document</h2>
+          <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-input').click()">
+            <div class="drop-zone-content">
+              <span class="drop-icon">📁</span>
+              <p>Drop files here or click to upload</p>
+              <p class="drop-hint">PDF, TXT, DOCX, MD</p>
+            </div>
+          </div>
+          <input type="file" id="file-input" accept=".pdf,.txt,.docx,.md,.markdown" multiple hidden />
+          <div id="upload-status"></div>
+        </div>
+
+        <!-- Query Section -->
+        <div class="panel-section">
+          <h2>🔎 Query Graph</h2>
+          <textarea id="query-input" placeholder="Ask a question about the knowledge graph...&#10;e.g. Who developed the Theory of Relativity?" rows="3"></textarea>
+          <button class="btn btn-primary" onclick="queryGraph()">🔍 Search</button>
+          <div id="query-results"></div>
+        </div>
+
+        <!-- Entities List -->
+        <div class="panel-section">
+          <h2>🏷️ Entities</h2>
+          <div class="filter-row">
+            <select id="entity-type-filter" onchange="filterEntities()">
+              <option value="">All Types</option>
+              <option value="PERSON">👤 Person</option>
+              <option value="ORG">🏢 Organization</option>
+              <option value="GPE">📍 Location</option>
+              <option value="CONCEPT">💡 Concept</option>
+              <option value="TECHNOLOGY">🔬 Technology</option>
+              <option value="AWARD">🏆 Award</option>
+              <option value="WORK">📖 Work</option>
+              <option value="DATE">📅 Date</option>
+            </select>
+          </div>
+          <div id="entities-list" class="entities-list"></div>
+        </div>
+      </aside>
+
+      <!-- Graph Canvas -->
+      <main class="graph-container">
+        <div class="graph-toolbar">
+          <button class="btn btn-sm" onclick="resetZoom()">⟳ Reset View</button>
+          <button class="btn btn-sm" onclick="toggleLabels()">🏷 Labels</button>
+          <span id="graph-stats" class="graph-stats"></span>
+        </div>
+        <div id="graph-canvas">
+          <svg id="main-graph"></svg>
+          <div id="empty-state" class="empty-state">
+            <div class="empty-icon">🧠</div>
+            <h3>No Knowledge Graph Yet</h3>
+            <p>Upload a document to start building your knowledge graph</p>
+            <button class="btn btn-primary btn-lg" onclick="loadDemo()">🎮 Load Demo</button>
+          </div>
+        </div>
+        <!-- Tooltip -->
+        <div id="node-tooltip" class="tooltip" style="display:none;"></div>
+      </main>
+
+      <!-- Right Panel -->
+      <aside class="right-panel" id="right-panel">
+        <div class="panel-section">
+          <h2>ℹ️ Entity Details</h2>
+          <div id="entity-details">
+            <p class="placeholder-text">Click on a node to see details</p>
+          </div>
+        </div>
+        <div class="panel-section" id="analytics-panel" style="display:none;">
+          <h2>📊 Graph Analytics</h2>
+          <div id="analytics-content"></div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display:none;">
+      <div class="loading-content">
+        <div class="spinner"></div>
+        <p id="loading-message">Processing document...</p>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/graph.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
