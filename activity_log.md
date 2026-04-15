@@ -6,3 +6,4 @@
 - [2026-04-15T17:03:11Z] chore: remove deprecated API calls
 - [2026-04-15T21:35:07Z] fix: resolve edge case in input validation
 - [2026-04-15T20:23:52Z] docs: improve inline documentation
+- [2026-04-15T17:40:53Z] feat: add helper utility function
