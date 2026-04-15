@@ -1,0 +1,3 @@
+# Activity Log
+
+- [2026-04-15T16:20:46Z] fix: handle null pointer exception
